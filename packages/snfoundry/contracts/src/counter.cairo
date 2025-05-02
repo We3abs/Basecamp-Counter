@@ -1,3 +1,4 @@
+
 #[starknet::interface]
 pub trait ICounter<TContractState> {
     fn get_counter(self: @TContractState) -> u32;
@@ -37,7 +38,7 @@ pub mod Counter {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, init_value :u32 ,owner: ContractAddress) {
+    fn constructor(ref self: ContractState, init_value :u32, owner: ContractAddress) {
         self.counter.write(init_value);
         self.ownable.initializer(owner);
     }
@@ -47,6 +48,7 @@ pub mod Counter {
     pub enum Event {
         Increased: Increased,
         Decreased: Decreased,
+        Reset: Reset,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
     }
@@ -58,6 +60,11 @@ pub mod Counter {
 
     #[derive(Drop, starknet::Event)]
     pub struct Decreased {
+        pub account: ContractAddress,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    pub struct Reset {
         pub account: ContractAddress,
     }
 
@@ -104,10 +111,6 @@ pub mod Counter {
         }
 
         fn reset_counter(ref self: ContractState) {
-
-            let counter_value = self.counter.read();
-            assert(counter_value == WIN_NUMBER, 'only win number');
-
             let caller = get_caller_address();
             let strk_contract_address: ContractAddress = FELT_STRK_CONTRACT.try_into().unwrap();
             
@@ -126,6 +129,7 @@ pub mod Counter {
             
             // Reset counter to 0
             self.counter.write(0);
+            self.emit(Reset{ account: get_caller_address()});
         }
         
         fn get_win_number(self: @ContractState) -> u32 {
