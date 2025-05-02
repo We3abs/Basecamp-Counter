@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     Counter: {
       address:
-        "0x13bc050823cbe0a8f5da461042889a0bf566f77cbb00886404fbaede550375a",
+        "0x2e0004b4e562ff27f7e9fff7a877e42fcfc804ea5000126377094fabe77b909",
       abi: [
         {
           type: "impl",
@@ -128,6 +128,10 @@ const deployedContracts = {
           name: "constructor",
           inputs: [
             {
+              name: "init_value",
+              type: "core::integer::u32",
+            },
+            {
               name: "owner",
               type: "core::starknet::contract_address::ContractAddress",
             },
@@ -148,6 +152,18 @@ const deployedContracts = {
         {
           type: "event",
           name: "contracts::counter::Counter::Decreased",
+          kind: "struct",
+          members: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::counter::Counter::Reset",
           kind: "struct",
           members: [
             {
@@ -224,6 +240,11 @@ const deployedContracts = {
               kind: "nested",
             },
             {
+              name: "Reset",
+              type: "contracts::counter::Counter::Reset",
+              kind: "nested",
+            },
+            {
               name: "OwnableEvent",
               type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
               kind: "flat",
@@ -232,7 +253,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x5661ed507bf20afedc42cb0c4370ebc91ef6b7ef6ba9138f59e1d23e6bbf18a",
+        "0x54ca27f832a257ad37afdd8f8549ee09305c2b43274b5ad4f90503b68274b94",
     },
   },
 } as const;
